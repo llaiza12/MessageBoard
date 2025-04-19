@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'games_screen.dart';
-import 'business_screen.dart';
-import 'public_health_screen.dart';
-import 'study_screen.dart';
+import 'package:hw4/profile.dart';
+import 'package:hw4/settings.dart';
+import 'messageboards_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,115 +18,55 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
       ),
-      home: const MyHomePage(title: 'Message Board'),
+      home: const MyHomePage(),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+  const MyHomePage({super.key});
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _selectedIndex = 0;
+  final List<Widget> _widgetOptions = const [
+    MessageboardsScreen(title: 'Message Board'),
+    ProfileScreen(),
+    SettingsScreen(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-
-        title: Center(child: Text(widget.title)),
+        title: Center(child: Text("Message Board")),
       ),
-      body: ListView(
-        children: <Widget>[
-          Container(
-            color: const Color.fromARGB(255, 228, 255, 232),
-            height: 100,
-            child: ListTile(
-              title: Center(
-                child: Text(
-                  "Games",
-                  style: TextStyle(fontSize: 30, color: Colors.blue),
-                ),
-              ),
-              leading: Icon(Icons.gamepad, color: Colors.green, size: 30),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const GamesScreen()),
-                );
-              },
-            ),
+      body: _widgetOptions[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.switch_account),
+            label: 'Profile',
           ),
-          Container(
-            color: const Color.fromARGB(255, 255, 253, 230),
-            height: 100,
-            child: ListTile(
-              title: Center(
-                child: Text(
-                  "Business",
-                  style: TextStyle(fontSize: 30, color: Colors.blue),
-                ),
-              ),
-              leading: Icon(Icons.attach_money, color: Colors.yellow, size: 30),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const BusinessScreen(),
-                  ),
-                );
-              },
-            ),
-          ),
-          Container(
-            color: const Color.fromARGB(255, 255, 232, 232),
-            height: 100,
-            child: ListTile(
-              title: Center(
-                child: Text(
-                  "Public Health",
-                  style: TextStyle(fontSize: 30, color: Colors.blue),
-                ),
-              ),
-              leading: Icon(
-                Icons.health_and_safety,
-                color: Colors.red,
-                size: 30,
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const PublicHealthScreen(),
-                  ),
-                );
-              },
-            ),
-          ),
-          Container(
-            height: 100,
-            color: const Color.fromARGB(255, 223, 241, 255),
-            child: ListTile(
-              title: Center(
-                child: Text(
-                  "Study",
-                  style: TextStyle(fontSize: 30, color: Colors.blue),
-                ),
-              ),
-              leading: Icon(Icons.book, color: Colors.blue, size: 30),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const StudyScreen()),
-                );
-              },
-            ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings),
+            label: "Settings",
           ),
         ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blue,
+        onTap: _onItemTapped,
       ),
     );
   }
