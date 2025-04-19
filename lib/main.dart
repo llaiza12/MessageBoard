@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'test',
-      home: LoginPage(title: 'User Login Page'),
+      title: 'Message Board App',
+      home: LoginPage(title: 'Login Page'),
     );
   }
 }

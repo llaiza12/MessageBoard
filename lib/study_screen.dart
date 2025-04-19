@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class StudyScreen extends StatefulWidget {
   const StudyScreen({super.key});
@@ -17,10 +18,24 @@ class _StudyScreenState extends State<StudyScreen> {
 
   Future<void> addTask([DocumentSnapshot? documentSnapshot]) async {
     String userMsg = _controller.text;
+    final user = FirebaseAuth.instance.currentUser;
+    final displayName = user?.displayName ?? "Guest";
+
     setState(() {
-      _messages.add({'message': userMsg});
+      _messages.add({
+        'message': userMsg,
+        'name': displayName,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
       _controller.clear();
     });
+  }
+
+  String _formatTimestamp(Timestamp? timestamp) {
+    if (timestamp == null) return '';
+    final date = timestamp.toDate();
+    final time = TimeOfDay.fromDateTime(date);
+    return time.format(context);
   }
 
   @override
@@ -58,14 +73,9 @@ class _StudyScreenState extends State<StudyScreen> {
                             streamSnapshot.data!.docs[index];
                         return ListTile(
                           title: Text(documentSnapshot['message']),
-                          trailing: IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () async {
-                              FirebaseFirestore.instance
-                                  .collection('studymessages')
-                                  .doc(documentSnapshot.id)
-                                  .delete();
-                            },
+                          subtitle: Text(documentSnapshot['name'] ?? "Guest"),
+                          trailing: Text(
+                            _formatTimestamp(documentSnapshot['timestamp']),
                           ),
                         );
                       },
